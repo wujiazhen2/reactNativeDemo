@@ -7,7 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "antd-mobile-rn": "^2.3.3",
+    "@ant-design/react-native": "^3.0.6",
     "babel-plugin-import": "^1.11.0",
     "react": "16.6.3",
     "react-native": "0.57.8",

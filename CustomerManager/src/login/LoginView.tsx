@@ -1,11 +1,11 @@
-import React, {Component, ReactDOM} from "react";
+import React, {Component} from "react";
 import {StyleSheet} from 'react-native';
-import {Button, Flex, InputItem, List, WhiteSpace, WingBlank} from "antd-mobile-rn";
-import { NavigationScreenProp} from "react-navigation";
+import {Button, InputItem, List, WhiteSpace, WingBlank} from "@ant-design/react-native";
+import {BaseProps} from "../AppNavigator";
 
 
-interface Props {
-    navigation:NavigationScreenProp<any>
+interface Props extends BaseProps{
+
 }
 
 const styles = StyleSheet.create({
@@ -27,13 +27,11 @@ export class LoginView extends Component<Props> {
                 <InputItem>用户名</InputItem>
                 <InputItem type="password">密码</InputItem>
                 <WhiteSpace/>
-                <WingBlank size={"md"}><Button type="primary" onClick={this.loginHandler.bind(this)}>登录</Button></WingBlank>
+                <WingBlank size={"md"}><Button type="primary" onPress={this.loginHandler.bind(this)}>登录</Button></WingBlank>
             </List>
         );
     }
     loginHandler(){
-        this.props.navigation.navigate({
-            routeName:"Index"
-        })
+        this.props.navigation.navigate("IndexView")
     }
 }
