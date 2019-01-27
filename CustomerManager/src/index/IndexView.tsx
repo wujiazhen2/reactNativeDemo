@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {View} from "react-native";
-import {Grid, Toast} from "@ant-design/react-native";
+import {Grid, Icon, Toast} from "@ant-design/react-native";
 import {DataItem} from "@ant-design/react-native/lib/grid/PropsType";
 import {BaseProps} from "../AppNavigator";
 
@@ -11,7 +11,7 @@ interface Props extends BaseProps {
 
 const data = [
     {
-        icon: "",
+        icon: <Icon name={"user"} />,
         text: "顾客管理"
     },
     {
