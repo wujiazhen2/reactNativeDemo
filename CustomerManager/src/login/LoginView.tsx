@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {StyleSheet} from 'react-native';
 import {Button, InputItem, List, WhiteSpace, WingBlank} from "@ant-design/react-native";
 import {BaseProps} from "../AppNavigator";
+import {NavigationActions, StackActions} from "react-navigation";
 
 
 interface Props extends BaseProps{
@@ -32,6 +33,12 @@ export class LoginView extends Component<Props> {
         );
     }
     loginHandler(){
-        this.props.navigation.navigate("IndexView")
+        const  resetAction = StackActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({routeName:'IndexView'})//要跳转到的页面名字
+            ]
+        });
+        this.props.navigation.dispatch(resetAction)
     }
 }

@@ -1,8 +1,10 @@
 import React, {Component} from "react";
 import {BaseProps} from "../AppNavigator";
-import {Button, Flex, InputItem, List, TextareaItem} from "@ant-design/react-native";
-import {ScrollView, StyleSheet, Text, View} from "react-native";
+import {Button, InputItem, List, TextareaItem, Toast} from "@ant-design/react-native";
+import {ScrollView, StyleSheet, Text} from "react-native";
 import Item from "@ant-design/react-native/lib/list/ListItem";
+import {globalParams} from "../Context";
+import {CustomerListItem} from "./CustomerListItem";
 
 interface Props extends BaseProps {
 
@@ -13,27 +15,28 @@ class CustomerInfo {
     name: string;
     phone: string;
     address: string;
-    desc: string;
+    description: string;
 
     constructor(id: number,
                 name: string,
                 phone: string,
                 address: string,
-                desc: string,) {
+                description: string,) {
         this.id = id;
         this.name = name;
         this.phone = phone;
         this.address = address;
-        this.desc = desc;
+        this.description = description;
     }
 }
 
 interface State {
+    id: number;
     editable: boolean;
-    name:string;
-    phone:string;
-    address:string;
-    desc:string;
+    name: string;
+    phone: string;
+    address: string;
+    description: string;
 }
 
 export class CustomerInfoView extends Component<Props, State> {
@@ -43,16 +46,29 @@ export class CustomerInfoView extends Component<Props, State> {
         this.loadData();
     }
 
-    loadData(): void {
+    loadData() {
         const id = this.props.navigation.state.params.id;
-        const ct = new CustomerInfo(id, "wujiazhen", "123123456798000000000", "广州广州广州广州广州广州广州广州广州广州广州广州广州广州广州广州广州广州广州广州广州广州广州广州广州", "需求")
-        this.state={
-            editable: false,
-            name:ct.name,
-            phone:ct.phone,
-            desc:ct.desc,
-            address:ct.address,
+        this.state = {
+            editable: id == -1,
+            id: id,
+            name: "",
+            phone: "",
+            description: "",
+            address: "",
         }
+        if (id != -1) {
+            let resp = fetch(globalParams.server + "/customer/get/" + id).then(resp => {
+                return resp.json();
+            }).then(value => {
+                this.setState({
+                    name: value.name,
+                    phone: value.phone,
+                    description: value.description,
+                    address: value.address,
+                })
+            });
+        }
+
     }
 
     edit() {
@@ -60,54 +76,97 @@ export class CustomerInfoView extends Component<Props, State> {
             editable: true
         });
     }
+
     save() {
+        const id = this.state.id;
+        let ct = new CustomerInfo(id, this.state.name, this.state.phone, this.state.address, this.state.description)
+        if (this.state.id == -1) {
+            delete ct.id
+            fetch(globalParams.server + "/customer/save", {
+                method: "post",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(ct)
+            }).then(resp => {
+                return resp.text();
+            }).then(value => {
+                Toast.success('保存成功', 1);
+                this.setState({
+                    id: parseInt(value)
+                })
+            })
+        } else {
+            fetch(globalParams.server + "/customer/update", {
+                method: "post",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(ct)
+            }).then(resp => {
+                Toast.success('保存成功', 1);
+            })
+        }
         this.setState({
             editable: false
         });
     }
+
     render(): React.ReactNode {
         let butt;
-        if(this.state.editable){
-            butt=<Button type={"primary"} style={style.button} onPress={this.save.bind(this)}>保存</Button>;
-        }else {
-            butt=<Button type={"primary"} style={style.button}  onPress={this.edit.bind(this)}>编辑</Button>;
+        if (this.state.editable) {
+            butt = <Button type={"primary"} style={style.button} onPress={this.save.bind(this)}>保存</Button>;
+        } else {
+            butt = <Button type={"primary"} style={style.button} onPress={this.edit.bind(this)}>编辑</Button>;
         }
 
-        return ( <ScrollView
-            style={{ flex: 1 }}
+        return (<ScrollView
+            style={{flex: 1}}
             automaticallyAdjustContentInsets={false}
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
         >
             <List>
                 <Item>
-                    <InputItem name={"name"} editable={this.state.editable} value={this.state.name}  onChange={(val)=>{this.setState({name:val})}}>姓名:</InputItem>
-                    <InputItem name={"phone"} editable={this.state.editable} value={this.state.phone} onChange={(val)=>{this.setState({phone:val})}}>电话:</InputItem>
+                    <InputItem name={"name"} editable={this.state.editable} value={this.state.name} onChange={(val) => {
+                        this.setState({name: val})
+                    }}>姓名:</InputItem>
+                    <InputItem name={"phone"} editable={this.state.editable} value={this.state.phone}
+                               onChange={(val) => {
+                                   this.setState({phone: val})
+                               }}>电话:</InputItem>
                     <Item multipleLine={true}>
                         <Text style={style.text}>地址:</Text>
-                        <TextareaItem name={"address"} rows={4} placeholder="地址" value={this.state.address} last={true} onChangeText={(val)=>{this.setState({address:val})}}  />
+                        <TextareaItem editable={this.state.editable}  name={"address"} rows={4} placeholder="地址" value={this.state.address} last={true}
+                                      onChangeText={(val) => {
+                                          this.setState({address: val})
+                                      }}/>
                     </Item>
                     <Item multipleLine={true}>
-                        <Text style={style.text} >需求:</Text>
-                        <TextareaItem name={"desc"} rows={4} placeholder="需求" value={this.state.desc} last={true} onChangeText={(val)=>{this.setState({desc:val})}} ></TextareaItem>
+                        <Text style={style.text}>需求:</Text>
+                        <TextareaItem editable={this.state.editable} name={"description"} rows={4} placeholder="需求" value={this.state.description}
+                                      last={true}
+                                      onChangeText={(val) => {
+                                          this.setState({description: val})
+                                      }}></TextareaItem>
                     </Item>
                 </Item>
                 {butt}
             </List>
-        </ScrollView> );
+        </ScrollView>);
     }
 }
 
 const style = StyleSheet.create({
     text: {
-        backgroundColor:"#bebebe",
+        backgroundColor: "#bebebe",
         paddingLeft: 1,
         textAlignVertical: 'center',
         fontSize: 17,
         color: "#090909"
     },
-    button:{
-        marginLeft:30,
-        marginRight:20
+    button: {
+        marginLeft: 30,
+        marginRight: 20
     }
 })
