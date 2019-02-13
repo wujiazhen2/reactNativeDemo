@@ -1,4 +1,4 @@
 
 export const globalParams={
-    server:"http://192.168.36.1:8080"
+    server:"http://192.168.1.9:8080"
 }

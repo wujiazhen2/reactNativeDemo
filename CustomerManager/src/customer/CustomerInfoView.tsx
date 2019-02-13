@@ -1,10 +1,10 @@
 import React, {Component} from "react";
 import {BaseProps} from "../AppNavigator";
-import {Button, InputItem, List, TextareaItem, Toast} from "@ant-design/react-native";
+import {Button, InputItem, List, TextareaItem, Toast,Icon,WingBlank} from "@ant-design/react-native";
 import {ScrollView, StyleSheet, Text} from "react-native";
 import Item from "@ant-design/react-native/lib/list/ListItem";
 import {globalParams} from "../Context";
-import {CustomerListItem} from "./CustomerListItem";
+import {NavigationActions, StackActions} from "react-navigation";
 
 interface Props extends BaseProps {
 
@@ -40,6 +40,26 @@ interface State {
 }
 
 export class CustomerInfoView extends Component<Props, State> {
+    static navigationOptions(navigation:any){
+        return {
+            headerLeft: (
+                <WingBlank>
+                <Icon name={"arrow-left"} onPress={
+                    ()=>{
+                        const  resetAction = StackActions.reset({
+                            index: 0,
+                            actions: [
+                                NavigationActions.navigate({routeName:'CustomerView'})//要跳转到的页面名字
+                            ]
+                        });
+                       navigation.navigation.dispatch(resetAction)
+                    }
+                }/>
+                </WingBlank>
+            ),
+        };
+    }
+
 
     constructor(props: Props, state: State) {
         super(props);

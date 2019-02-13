@@ -32,7 +32,8 @@ const AppNavigator =  createStackNavigator({
     CustomerInfoView:{
         screen:CustomerInfoView,
         navigationOptions: {
-            title: "客户信息"
+            title: "客户信息",
+
         }
     }
 }, {
