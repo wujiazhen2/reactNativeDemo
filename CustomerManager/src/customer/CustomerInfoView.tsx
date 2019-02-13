@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {BaseProps} from "../AppNavigator";
-import {Button, InputItem, List, TextareaItem, Toast,Icon,WingBlank} from "@ant-design/react-native";
-import {ScrollView, StyleSheet, Text} from "react-native";
+import {Button, InputItem, List, TextareaItem,Icon,WingBlank} from "@ant-design/react-native";
+import {ScrollView, StyleSheet, Text, ToastAndroid} from "react-native";
 import Item from "@ant-design/react-native/lib/list/ListItem";
 import {globalParams} from "../Context";
 import {NavigationActions, StackActions} from "react-navigation";
@@ -111,7 +111,7 @@ export class CustomerInfoView extends Component<Props, State> {
             }).then(resp => {
                 return resp.text();
             }).then(value => {
-                Toast.success('保存成功', 1);
+                ToastAndroid.show('保存成功', 1);
                 this.setState({
                     id: parseInt(value)
                 })
@@ -124,7 +124,7 @@ export class CustomerInfoView extends Component<Props, State> {
                 },
                 body: JSON.stringify(ct)
             }).then(resp => {
-                Toast.success('保存成功', 1);
+                ToastAndroid.show('保存成功', 1);
             })
         }
         this.setState({

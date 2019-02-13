@@ -1,6 +1,6 @@
 import React, {Component} from "react";
-import {Icon, List, ListView, SearchBar, Toast} from '@ant-design/react-native';
-import {Dimensions, View} from "react-native";
+import {Icon, List, ListView, SearchBar} from '@ant-design/react-native';
+import {Dimensions, ToastAndroid, View} from "react-native";
 import {BaseProps} from "../AppNavigator";
 import {CustomerListItem} from "./CustomerListItem";
 import ActionButton from 'react-native-action-button';
@@ -101,7 +101,7 @@ export class CustomerView extends Component<Props, State> {
             body: JSON.stringify(checkeds)
         }).then(resp=>{
             this.refresh();
-            Toast.success('删除成功', 2);
+            ToastAndroid.show('删除成功', 1);
         })
     }
     checkedAll(checked:boolean){
@@ -130,7 +130,7 @@ export class CustomerView extends Component<Props, State> {
         };
         const ret = RNFS.downloadFile(options);
         ret.promise.then(res => {
-           Toast.success("导出成功，文件保存路径："+destFile,1);
+            ToastAndroid.show("导出成功，文件保存路径："+destFile,1);
         }).catch(err => {
             alert(err)
             console.log('err', err);
